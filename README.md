@@ -20,7 +20,7 @@ Under this tab, you'll see the following:
 Here, the first two keys are `oauthConsumerKey` and `oauthConsumerSecret`, respectively,
 and the second two keys are `oauthAccessToken` and `oauthAccessTokenSecret`, also respectively.
 
-# Installing Kvitter
+## Installing Kvitter
   
 1. Download the latest release from https://github.com/viktornordling/kvitter/releases
 2. Unzip / untar the release somewhere:
