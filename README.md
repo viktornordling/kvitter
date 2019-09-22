@@ -25,7 +25,7 @@ and the second two keys are `oauthAccessToken` and `oauthAccessTokenSecret`, als
 1. Download the latest release from https://github.com/viktornordling/kvitter/releases
 2. Unzip / untar the release somewhere:
    ```
-   unzip kvitter.zip
+   unzip kvitter-1.0.0.zip
    ```
 3. Run the install command. This sets up a Launch Agent (Mac only, pull requests for 
    Windows / Linux  welcome) which will fetch new tweets once per day. Obviously, your computer
