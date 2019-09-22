@@ -10,7 +10,7 @@ a (very basic) search command for searching through all the tweets.
 Before you begin, you need to create API keys for accessing your account via twitter's
 APIs. Go to https://dev.twitter.com/apps/new and follow the prompts (this is pretty painful, just 
 bear with it). When all that is done, create a "new app" (because obviously we need to register an "app"
-in order to user their APIs), call it anything and humor them with your best minimum 100 character
+in order to use their APIs), call it anything and humor them with your best minimum 100 character
 description of your fantastic app. When all that is done, go to the app and click `Keys and tokens`.
 
 Under this tab, you'll see the following:
