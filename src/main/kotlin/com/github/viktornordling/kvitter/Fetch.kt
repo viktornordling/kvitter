@@ -7,7 +7,9 @@ import twitter4j.*
 import twitter4j.conf.ConfigurationBuilder
 import java.io.File
 import java.lang.Long.parseLong
+import java.nio.file.Files
 import java.nio.file.Paths
+import kotlin.math.max
 
 @Serializable
 data class TwitterCredentials(
@@ -45,9 +47,11 @@ class Fetch : CliktCommand(name = "fetch", help = "Fetch tweets") {
             println("Requesting tweets with minId = $minId and maxId = $maxId")
             val tweets: ResponseList<Status>? = twitter.getHomeTimeline(paging)
             if (tweets != null && !tweets.isEmpty()) {
-                newMin = Math.max(newMin, tweets.first().id)
+                newMin = max(newMin, tweets.first().id)
                 maxId = tweets.last().id - 1
-                Paths.get("archive", "$maxId.json").toFile().printWriter().use { out ->
+                val archiveDirectory = Paths.get("archive")
+                Files.createDirectories(archiveDirectory)
+                archiveDirectory.resolve("$maxId.json").toFile().printWriter().use { out ->
                     val array = JSONArray(tweets)
                     for (tweet: Status in tweets) {
                         println("---")

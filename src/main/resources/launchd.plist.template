@@ -6,8 +6,6 @@
         <string>com.github.viktornordling.kvitter</string>
         <key>ProgramArguments</key>
         <array>
-                <string>sh</string>
-                <string>-c</string>
                 <string>bin/kvitter</string>
                 <string>fetch</string>
         </array>
