@@ -23,7 +23,7 @@ data class Tweet(val createdAt: String, val retweet: Boolean, val text: String, 
 class TweetList : TypeReference<List<Tweet>>()
 
 class Search: CliktCommand(help = "Search tweets") {
-    private val searchTerm by argument()
+    private val searchTerm by argument(name = "SEARCH-TERM", help = "Term you want to search for")
 
     override fun run() {
         println("Searching for '$searchTerm'")
