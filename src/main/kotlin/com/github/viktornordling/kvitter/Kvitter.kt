@@ -3,7 +3,7 @@ package com.github.viktornordling.kvitter
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.subcommands
 
-class KvitterClient: CliktCommand() {
+class KvitterClient: CliktCommand(name = "kvitter") {
     override fun run() = Unit
 }
 
