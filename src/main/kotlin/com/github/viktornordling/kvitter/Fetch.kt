@@ -8,6 +8,7 @@ import twitter4j.conf.ConfigurationBuilder
 import java.io.File
 import java.lang.Long.parseLong
 import java.nio.file.Files
+import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.math.max
 
@@ -22,22 +23,10 @@ data class TwitterCredentials(
 class Fetch : CliktCommand(name = "fetch", help = "Fetch tweets") {
 
     override fun run() {
-        val file = File("min_id.txt")
-        val minId = when {
-            file.exists() -> parseLong(file.inputStream().bufferedReader().use { it.readText().trim() })
-            else -> 1L
-        }
-        val config = Yaml.default.parse(TwitterCredentials.serializer(), File("config.yaml").readText())
-        println("Fetching tweets newer than $minId.")
+        val twitter: Twitter = createTwitterClient()
+        val archiveDirectory = getOrCreateArchiveDirectory()
 
-        val configBuilder = ConfigurationBuilder()
-        configBuilder.setDebugEnabled(true).setTweetModeExtended(true)
-                .setOAuthConsumerKey(config.oauthConsumerKey)
-                .setOAuthConsumerSecret(config.oauthConsumerSecret)
-                .setOAuthAccessToken(config.oauthAccessToken)
-                .setOAuthAccessTokenSecret(config.oauthAccessTokenSecret)
-        val twitterFactory = TwitterFactory(configBuilder.build())
-        val twitter: Twitter = twitterFactory.instance
+        val minId = getMinId()
         var count = 0
         var maxId = -1L
         var newMin = -1L
@@ -49,29 +38,43 @@ class Fetch : CliktCommand(name = "fetch", help = "Fetch tweets") {
             if (tweets != null && !tweets.isEmpty()) {
                 newMin = max(newMin, tweets.first().id)
                 maxId = tweets.last().id - 1
-                val archiveDirectory = Paths.get("archive")
-                Files.createDirectories(archiveDirectory)
                 archiveDirectory.resolve("$maxId.json").toFile().printWriter().use { out ->
                     val array = JSONArray(tweets)
-                    for (tweet: Status in tweets) {
-                        println("---")
-                        print("${tweet.id}, ${tweet.createdAt}, ${tweet.text}")
-                        print("\n")
-                    }
                     out.println(array.toString())
                 }
-                // Sleep a bit so we don't hit rate limits.
-                Thread.sleep(200)
                 count++
             } else {
-                println("Done. New min = $newMin")
                 break
             }
         }
         if (newMin != -1L) {
-            File("min_id.txt").printWriter().use { out ->
-                out.println(newMin)
-            }
+            File("min_id.txt").printWriter().use { out -> out.println(newMin) }
         }
+    }
+
+    private fun getOrCreateArchiveDirectory(): Path {
+        val archiveDirectory = Paths.get("archive")
+        Files.createDirectories(archiveDirectory)
+        return archiveDirectory
+    }
+
+    private fun getMinId(): Long {
+        val file = File("min_id.txt")
+        return when {
+            file.exists() -> parseLong(file.inputStream().bufferedReader().use { it.readText().trim() })
+            else -> 1L
+        }
+    }
+
+    private fun createTwitterClient(): Twitter {
+        val config = Yaml.default.parse(TwitterCredentials.serializer(), File("config.yaml").readText())
+        val configBuilder = ConfigurationBuilder()
+        configBuilder.setDebugEnabled(true).setTweetModeExtended(true)
+                .setOAuthConsumerKey(config.oauthConsumerKey)
+                .setOAuthConsumerSecret(config.oauthConsumerSecret)
+                .setOAuthAccessToken(config.oauthAccessToken)
+                .setOAuthAccessTokenSecret(config.oauthAccessTokenSecret)
+        val twitterFactory = TwitterFactory(configBuilder.build())
+        return twitterFactory.instance
     }
 }
