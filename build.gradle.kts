@@ -20,6 +20,7 @@ dependencies {
 
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
+    testImplementation(group = "org.assertj", name = "assertj-core", version = "3.11.1")
 
     compile(group = "org.twitter4j", name = "twitter4j-core", version = "4.0.6")
     compile(group = "joda-time", name = "joda-time", version = "2.3")
